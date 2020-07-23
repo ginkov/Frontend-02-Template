@@ -112,7 +112,6 @@ function endTagOpen(c) {
 }
 module.exports.parseHTML = function parseHTML(html) {
     // console.log(html) // 简单的占位方法
-    console.log('hahahahahhahahahahhahahahaha')
     let state = data
     for(let c of html) {
         state = state(c)

@@ -48,15 +48,16 @@ class ResponseParser {
     }
     receiveChar (char) {
         // FSM code here.
-        if(this.current === this.WAITING_HEADER_NAME) {
+        if(this.current === this.WAITING_STATUS_LINE) {
             if(char === '\r') {
-                this.current = this.WAITING_HEADER_LINE_END
-            } else {
+                this.current = this.WAITING_STATUS_LINE_END
+            }
+            else {
                 this.statusLine += char
             }
         }
-        else if(this.current === this.WAITING_HEADER_LINE_END) {
-            if(char === '\n') {
+        else if(this.current === this.WAITING_STATUS_LINE_END){
+            if(char === '\n'){
                 this.current = this.WAITING_HEADER_NAME
             }
         }
@@ -67,7 +68,7 @@ class ResponseParser {
             else if(char === '\r') {
                 this.current = this.WAITING_HEADER_BLOCK_END
                 if(this.headers['Transfer-Encoding'] === 'chunked') {
-                    this.bodyParser = new TrunkedBodyParser()
+                    this.bodyParser = new ChunkedBodyParser()
                 }
             }
             else {
@@ -107,7 +108,7 @@ class ResponseParser {
     }
 }
 
-class TrunkedBodyParser {
+class ChunkedBodyParser {
     constructor() {
         // 遇到长度为 0 的 chunk，就结了。
         this.WAITING_LENGTH = 0
@@ -118,14 +119,18 @@ class TrunkedBodyParser {
         this.WAITING_NEW_LINE_END = 4
         this.length = 0
         this.content = []
-        this.isFinished = false
+        this._isFinished = false
         this.current = this.WAITING_LENGTH
+    }
+
+    get isFinished() {
+        return this._isFinished
     }
     receiveChar(char) {
         if(this.current === this.WAITING_LENGTH) {
             if(char === '\r') {
                 if(this.length === 0) {
-                    this.isFinished = true
+                    this._isFinished = true
                 }
                 this.current = this.WAITING_LENGTH_LINE_END
             }
@@ -135,7 +140,7 @@ class TrunkedBodyParser {
             }
         }
         else if(this.current === this.WAITING_LENGTH_LINE_END) {
-            if(char === '\n') {
+            if(char === '\n' && this._isFinished) {
                 this.current = this.READING_TRUNK
             }
         }
@@ -201,7 +206,7 @@ class Request {
                 })
             }
             connection.on('data', (data) => {
-                console.log(data.toString())
+                // console.log(data.toString())
                 parser.receive(data.toString())
                 if (parser.isFinished) {
                     resolve(parser.response)
@@ -212,7 +217,6 @@ class Request {
                 reject(err)
                 connection.end()
             })
-            // resolve(this.bodyText)
         })
     }
     toString () {
@@ -237,6 +241,7 @@ void async function () {
     })
     let response = await request.send()
     // 对真正的浏览器，必须能逐段返回包，然后逐段去解析
+    console.log('============ Response Body ===============')
+    console.log(response.body)
     let dom = parser.parseHTML(response.body)
-    // console.log(response)
 }()
