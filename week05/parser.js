@@ -1,7 +1,7 @@
 // const { stat } = require("fs")
 const css = require('css')
 const EOF= Symbol("EOF")  // 利用 Symbol 的唯一性，创建了 EOF
-const layout = require("./layout.jsj")
+const layout = require("./layout.js")
 
 let currentToken = null;
 let currentAttribute = null;
