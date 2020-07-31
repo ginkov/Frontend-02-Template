@@ -241,7 +241,10 @@ void async function () {
     })
     let response = await request.send()
     // 对真正的浏览器，必须能逐段返回包，然后逐段去解析
-    console.log('============ Response Body ===============')
-    console.log(response.body)
+    // console.log('============ Response Body ===============')
+    // console.log(response.body)
     let dom = parser.parseHTML(response.body)
+    console.log('----- dom -----')
+    console.log(JSON.stringify(dom, null, '    '))
+    // console.log('')
 }()
