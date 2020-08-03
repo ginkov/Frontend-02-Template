@@ -177,6 +177,18 @@ CSS 有三代排版技术：
 
 # 12. 渲染 | 绘制单个元素
 
+使用 npm 的 images 库，绘制到图片。
+
+```
+npm install images
+```
+
+安装 images 3.2.3
+
+
+
+
+
 # 13. | 绘制 DOM 树
 
 
