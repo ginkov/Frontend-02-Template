@@ -53,7 +53,7 @@ function layout(element) {
 
     if (style.flexDirection === 'row') {
         mainSize = 'width'
-        mainstart = 'left'
+        mainStart = 'left'
         mainEnd = 'right'
         mainSign = +1;  // 从左开始去加
         mainBase = 0;   // 左边基准
@@ -65,7 +65,7 @@ function layout(element) {
 
     if(style.flexDirection === 'row-reverse') {  // 从右往左
         mainSize = 'width'
-        mainstart = 'right'
+        mainStart = 'right'
         mainEnd = 'left'
         mainSign = -1;   // 从右往左加，相当于减
         mainBase = style.width; // 右边基准
