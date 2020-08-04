@@ -246,10 +246,11 @@ void async function () {
     // console.log('============ Response Body ===============')
     // console.log(response.body)
     let dom = parser.parseHTML(response.body)
-    console.log('----- dom.children[1].children[3].children[1] -----')
-    console.log(JSON.stringify(dom.children[1].children[3].children[1].children[3], null, '    '))
+    // console.log('----- dom.children[1].children[3].children[1] -----')
+    // console.log(JSON.stringify(dom.children[1].children[3].children[1].children[3], null, '    '))
 
     let viewport = images(800,600);
-    render(viewport, dom.children[1].children[3].children[1].children[3]);
+    // render(viewport, dom.children[1].children[3].children[1].children[3]);
+    render(viewport, dom)
     viewport.save('viewport.jpg');
 }()
