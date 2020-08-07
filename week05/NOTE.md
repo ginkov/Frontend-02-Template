@@ -191,5 +191,5 @@ npm install images
 
 # 13. | 绘制 DOM 树
 
-
+绘制多个元素。递归调用 render 函数。比较简单。
 
