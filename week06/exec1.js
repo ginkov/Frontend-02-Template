@@ -16,3 +16,4 @@ hello world!
 const dom = new JSDOM(doc)
 let a = dom.window.document.getElementById('myid')
 console.log(a.innerHTML)
+
