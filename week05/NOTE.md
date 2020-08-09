@@ -1,5 +1,13 @@
 Week 05 浏览器工作原理
 
+\#学号: G20200447020292
+\#姓名: 尹欣
+\#班级: 2班
+\#小组: 9组
+\#作业&总结链接:https://github.com/ginkov/Frontend-02-Template/tree/master/week06
+
+
+
 # 1.  CSS 计算 | 收集 CSS 规则 
 
 ## 环境准备
