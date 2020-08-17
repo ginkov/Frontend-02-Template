@@ -137,9 +137,80 @@ margin collapse 只会发生在 BFC 、正常流里面。Flex、Grid 都没有 m
 
 ## Block
 
-* block container: 里面有 BFC 的
+BFC - Block Formatting Context
+
+另外一种是 IFC - Inline Formatting Context
+
+来了一个盒，要么把它放到里层的 IFC 里面，要么把它放到外层的 BFC 里面。
+
+如果里层没有 IFC，就创建一个 IFC。
+
+* Block container: 里面有 BFC 的
   * 能容纳正常流的盒，里面就有 BFC
   * 比如 DIV,P,H1~H5
+* Block-Level Box: 外面有 BFC 的
+* Block Box = Block Container + Block-level Box: 里外都有 BFC 的。
+
+## Block Container
+
+作为 block 的 container
+
+* block
+* inline-block
+* table-cell
+* flex item  // display 为 flex 元素的子元素
+* grid cell
+* table-caption
+
+table-row 就不是。它里面是 table-cell，不算是正常流。
+
+display 为 flex 这样的元素，它不是 Block Container。但是它的子元素，叫 Flex Item，它是 Flex Container。
+
+Grid 的 Cell 默认都是 Block Container
+
+## Block-level-box
+
+大多数元素的 display 值都有两种选项，一个是 Block Level 的，一个是 Inline Level 的。
+
+### block level
+
+* display: block
+* display: flex
+* display: table
+* display: grid
+
+### Inline level
+
+* display: inline-block
+* display: inline-flex
+* display: inline-table
+* display: inline-grid
+
+还有一种特殊的 display 叫 Run-in，跟着自己的上一个元素来。
+
+它有的时候是 inline level 的，有的时候是 Block level 的。
+
+### 设立 BFC
+
+什么样的盒会创建 BFC 呢？
+
+* floats
+* absolutely positioned elements
+* block containers (such as inline-blocks, table-cells, and table captions) that are not block boxes
+  // 是 block container, 但不是 block box
+  * flex items
+  * grid cell
+* and block boxes with 'overlfow' other than 'visible'
+
+### BFC 合并
+
+* block box && overlfow: visible
+  * BFC 合并与 float
+  * BFC 合并与边距折叠
+
+看老师的例子，创建 BFC 与否，对边距折叠的影响，有意思。
+
+
 
 
 
