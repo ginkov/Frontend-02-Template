@@ -135,11 +135,11 @@ margin collapse 只会发生在 BFC 、正常流里面。Flex、Grid 都没有 m
 
 正常流里面最困难的部分。
 
-## Block
-
 BFC - Block Formatting Context
 
 另外一种是 IFC - Inline Formatting Context
+
+## Block
 
 来了一个盒，要么把它放到里层的 IFC 里面，要么把它放到外层的 BFC 里面。
 
@@ -148,8 +148,9 @@ BFC - Block Formatting Context
 * Block container: 里面有 BFC 的
   * 能容纳正常流的盒，里面就有 BFC
   * 比如 DIV,P,H1~H5
-* Block-Level Box: 外面有 BFC 的
+* Block-Level Box: 外面有 BFC 的，它能被放进 BFC 里面。
 * Block Box = Block Container + Block-level Box: 里外都有 BFC 的。
+  * 我觉得 Div 就是 Block Box 啊。
 
 ## Block Container
 
@@ -190,7 +191,7 @@ Grid 的 Cell 默认都是 Block Container
 
 它有的时候是 inline level 的，有的时候是 Block level 的。
 
-### 设立 BFC
+### 设立 BFC （Establish BFC)
 
 什么样的盒会创建 BFC 呢？
 
@@ -210,13 +211,65 @@ Grid 的 Cell 默认都是 Block Container
 
 看老师的例子，创建 BFC 与否，对边距折叠的影响，有意思。
 
+#### 对 float 的影响
 
+float 对里面的行盒发生了影响。
+
+边距折叠只会发生在同一个BFC里面。
 
 
 
 # 6. | Flex 排版
 
+* 把盒收集进行
+
+* 计算盒在主轴方向的排布
+
+* 计算盒在交叉轴方向的排布
+
+分行：
+
+根据主轴尺寸，把元素进行分行
+
+如果设置了 no-wrap，则强行分配进第一行。
+
+计算主轴方向：
+
+找出所有 Flex 元素
+
+flex-align, item-align
+
 # 7. CSS 动画与绘制 | 动画
+
+## Animation
+
+* @keyframes
+* animation 的使用
+
+```html
+<style>
+@keyframes mykf
+{
+	from { background: red;}
+	to {background: yellow;}
+}
+
+div {
+	animation: mykf 5s infinite;
+}
+</style>
+<div style="width: 100px; height: 100px;">
+</div>
+```
+
+看看上面这段代码，挺有意思的。
+
+* animation-name 时间曲线
+* animation-duration 动画时长
+* animation-timing-function 动画的时间曲线
+* animation-delay 动画开始前的延迟
+* animation-iteration-count 动画的播放次数
+* animation-direction 动画的方向
 
 # 8. | 颜色
 
