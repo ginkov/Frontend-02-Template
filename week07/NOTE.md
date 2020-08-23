@@ -271,7 +271,125 @@ div {
 * animation-iteration-count 动画的播放次数
 * animation-direction 动画的方向
 
+## Keyframes 的定义
+
+Keyframes 可以使用百分比，也可以使用 From To
+
+* from 相当于0
+* to 相当于1
+
+```
+@keyframes mykf {
+	0% {top:0, transition: top ease}
+	50% {top: 30px; trnasition: top ease-in}
+	75% {top: 10px; transition: top ease-out}
+	100% {top: 0; transition: top linear}
+}
+```
+
+有个常见的技巧是定义 transition，而不是使用 Animation 的 Timing Function.
+
+这样，每两个 keyframe 之间的，它们的 Timing Function 都可以不用是一样的。
+
+如果用 Animation 的 Timing Function，就没有办法分段指定了。
+
+## Transition 的使用
+
+transition 属性
+
+* transition-property
+* transition-duration
+* transition-timing-function
+* transition-dely
+
+### timing function
+
+三次贝塞尔曲线 见 https://cubic-bezier.com/
+
+三次贝塞尔曲线很有意思，通过两个端点的坐标（四个参数）就可以控制各种形状。
+
+ease, ease-in, ease-out，是缓动的意思。
+
+* ease-in  缓启动
+* ease-out 缓停止
+* ease 缓启动和缓停止
+
+一些很炫酷的动画行为，就可以用三次贝塞尔曲线来做。
+
+
+
 # 8. | 颜色
+
+自然界中光谱是连续的。能量主要集中在绿色带。
+
+400nm（紫外）~760nm（红外）
+
+## CMYK 与 RGB
+
+红黄蓝 vs 红绿蓝
+
+实际上，小时候了解的红、黄、蓝是：
+
+* 品红 -- Marginta （绿的补色）
+* 黄 - Yellow （蓝的补色)
+* 青 -- Cyan (红的补色)
+
+实际是发光系统的三原色，与吸光系统的三原色。
+
+所以，在印刷行业里面，就如 CMY 颜色。
+
+那什么是 CMYK 呢？就是印刷行业里面，不会用 CMY 去调出黑色，那样太不划算。
+
+单独使用 K，让K的利用率最大化。
+
+可是，为什么黑色要用 K来代替呢？
+
+* 如果用B代替，会和 Blue 蓝色混
+* 另外，K (key，黑色) 的使用有一些讲究。见：https://gearside.com/color-black-represented-k-cmyk/
+
+## HSL 与 HSV
+
+CMYK / RGB 与人们的视觉习惯不合。
+
+Hue（色相） - 把6种颜色拼成一个色盘，通过 Hue 来调色
+
+Saturation （纯度）- 饱和度
+
+Value - Brightness （纯色）到 100% 时，是最纯，最鲜艳的一个颜色，比如正红
+
+Lightness - 最下面是黑，最上面是白。要想得到纯色，就得取中间值  Lightness = 50%
+
+之前 W3C 上有过一次争论，到底该用 HSL 还是 HSV。最后 W3C 选择了 HSL。
+
+选择 HSL 的好处是，可以简单更改色相，而保留颜色之间的对比度和明暗关系。
 
 # 9. | 绘制
 
+* 几何图形
+  * border
+  * box-shadow
+  * border-radius
+* 文字
+  * font
+  * text-decoration
+* 位图
+  * background-image
+
+图形库
+
+* 手机 Skia
+* Windows :GDI
+* 底层都是用 Shader
+
+应用技巧：
+
+* data uri + svg
+* data: image/svg+xml,\<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg"><ellipse cx="300" cy="150" rx="200" ry="80" style="fill:rgb(200,100,50);stroke:rgb(0,0,100);stroke-width:2"/>\</svg\>
+
+我们可以把 SVG 变成 data uri
+
+```svg
+data: image/svg+xml,<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg"><ellipse cx="300" cy="150" rx="200" ry="80" style="fill:rgb(200,100,50);stroke:rgb(0,0,100);stroke-width:2"/></svg>
+```
+
+上面这个地址，可以直接在浏览器中显示出来。
