@@ -1,0 +1,58 @@
+<script>
+    let names = Object.getOwnPropertyNames(window);
+
+    function filterOut(names, props) {
+        let set = new Set();
+        props.forEach(o => set.add(o));
+        return names.filter(e => !set.has(e));
+    }
+
+    //ECMA 262
+    {
+        let js = new Set()
+        let objects = ['globalThis', 'console', 'BigInt', 'BigInt64Arrary',
+        'BigUInt64Array', 'Infinity', 'NaN', 'undefined', 'eval', 'isNaN']
+        objects.forEach(o=>js.add(o));
+        names = names.filter(e => !js.has(e))
+    }
+
+    // subclass of Node
+    names = names.filter(e => {
+        try {
+            return !(window[e].prototype instanceof Node)
+        } catch(err) {
+            return true;
+        }
+    }).filter(e => e != 'Node')
+
+    //events
+    names = names.filter( e => !e.match(/^on/))
+
+    //webkit private
+    names = names.filter( e => !e.match(/^webkit/))
+
+    // https://html.spec.whatwg.org/#window
+    {
+        let names = Object.getOwnPropertyNames(window)
+        let js = new Set();
+        let objects = ['BigInt', 'BigInt64Arrary', 'BigUInt64Array', 'Infinity', 'NaN'
+        'undefined', 'eval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt']
+        objects.forEach(o => js.add(o));
+        names = names.filter(e => !js.has(e));
+
+        names = names.filter( e => {
+            try {
+                return !(window[e].prototype instanceof Node)
+            } catch(err) {
+                return true;
+            }
+        }).filter( e => e!='Node')
+
+        let windowprops = new Set()
+        objects = ['window', 'self', 'document', 'name', 'location', 'history',
+        'customElements', 'locationbar', 'menubar']
+        objects.forEach(o => windowprops.add(o));
+        names = names.filter(e => !windowprops.has(e));
+    }
+    console.log(names)
+</script>

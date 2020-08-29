@@ -1,0 +1,20 @@
+<div id="a"><span>1</span><p>2</p><a>3</a><div>4</div></div>
+<div id="b">element B</div>
+<script>
+let element = document.getElementById('a');
+let eb = document.getElementById('b');
+
+function reverseChildren(element) {
+    var l = element.childNodes.length;
+    //childNodes 是一个 Living Collection
+    //从后往前循环，把后面的移掉，不影响前面的
+    while(l-- > 0) {
+        eb.appendChild(element.childNodes[l])
+        // 这个方法看起来很巧妙 -- 但要知道什么是 living Collection
+    }
+}
+
+reverseChildren(element);
+console.log(element)
+
+</script>
