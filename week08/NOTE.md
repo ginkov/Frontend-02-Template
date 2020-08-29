@@ -240,16 +240,70 @@ window.getComputedStyle(elt, pseudoElt)
 
 * window.innerHeight, window.innerWidth // 实际可显示的区域
 * window.outWidth, window.outerHeight // 包域和 Window 的工具栏
-* window.devicePixelRatio
+* window.devicePixelRatio // 特别重要，它的意思是我们屏幕上的物理像素和逻辑像素px的比值
+  * 这个就是著名的 DPR
 * window.screen
-  * window.screen.width
+  * window.screen.width 
   * window.screen.height
-  * window.screen.availWidth
+  * window.screen.availWidth // 有些设备屏幕上会留出来一部分作物理按钮，所以就有这个 availWidth
   * window.screen.availHeight
+
+开一个新浏览器窗口时：
+
+* window.open('about:blank', ' blank', 'width=100,height=100,lef=100,right=100') // 可以指定窗口的大小和位置
+* moveTo(x,y)
+* moveBy(x,y)
+* resizeTo(x,y)
+* resizeBy(x,y)
+
+## scroll API
+
+### scroll 元素
+
+* scrollTop
+* scrollLeft
+* scrollWidth
+* scrollHeight
+* scroll(x,y)
+* scrollBy(x,y)
+* scrollIntoView()
+
+### window 的 scroll
+
+* window
+  * scrollX
+  * scrollY
+  * scroll(x,y)
+  * scrollBy(x,y)
+
+### layout // 非常重要！
+
+* getClientRects()  // 在元素上可以调用它生成的所有的盒（Rect）
+* getBoundingClientRect()  // 只取一个 -- 是正好圈住一个盒的内容
+
+**伪元素在页面上无法被先中** 这个很有意思啊！
 
 
 
 # 9. | 其它 API
+
+API 来自于哪里？
+
+W3C / ECMA (这是啥？)
+
+* khronos  // openGL 的持有者
+  * WebbGL
+* ECMA
+  * ECMAScript
+* WHATWG  // 是从 W3C 分裂出去的，Living Standard 总是最新的版本
+  * HTML
+* W3C
+  * webaudio
+  * CG/WG  //Community Group 是社区工作组， WG 是 Working Group, IG Interest Group
+
+API
+
+
 
 
 
