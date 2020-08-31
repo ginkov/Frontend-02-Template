@@ -1,0 +1,106 @@
+<style>
+    .cell {
+        width: 100px;
+        height: 100px;
+        background-color: green;
+        display: inline-block;
+        border: solid 1px white;
+        vertical-align: middle;
+
+        line-height: 100px;  /* 和父元素相同的 lineheight 可以帮助我们垂直居中 */
+        font-size: 50px;
+        text-align: center;
+        color: white;
+    }
+</style>
+<div id="board"></div>
+<script>
+    let pattern = [
+        [2, 0, 0],
+        [0, 1, 0],
+        [0, 0, 0]
+    ]
+    let color = 1;
+    function show() {
+        let board = document.getElementById('board');
+        board.innerHTML = "";
+        for(let i = 0; i < 3; i++) {
+            for(let j=0; j < 3; j++) {
+//        for(var i = 0; i < 3; i++) {
+//            for(var j=0; j < 3; j++) {
+                let cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.innerText = 
+                    pattern[i][j] == 2? 'X':
+                    pattern[i][j] == 1? 'O': '';
+                cell.addEventListener('click', () => move(j,i))
+                /*
+                    注意，由于我们使用了 let, 作用域有效, i,j 每次循环被保留下来
+                    如果是 var, cell.addEventListener 最后都成了 move(3,3)
+                    老师这一点提醒得很重要
+                 */
+                board.appendChild(cell)
+            }
+            board.appendChild(document.createElement('br'))
+        }
+    }
+
+    function move(x,y) {
+        pattern[y][x] = color;
+        show()
+        if (check()) {
+            alert(color==2 ? "X won!": ' O won!');
+        }
+        color = 3 - color;  // 不断地从1变2，从2变1
+    }
+
+    function check() {
+        // 总是取当前的 color 来判断，因为刚刚落完子
+        // 但是 color 是不是要传进来呢？难道是 global 的？
+        for(let i=0; i<3; i++) {
+            let win = true;
+            // 先判断同一行
+            for(let j=0; j<3; j++) {
+                if(pattern[i][j] !== color) {
+                    win = false  // 这一行中，只要有一个不同色的，就算失败
+                }
+            }
+            if (win) {
+                return true;
+            }
+        }
+        for(let i =0; i<3; i++) {
+            let win = true;
+            for(let j=0; j<3; j++) {
+                if(pattern[j][i] !== color) {
+                    win = false
+                }
+            }
+            if(win) {
+                return true
+            }
+        }
+        {
+            let win = true;
+            for(let j=0; j<3; j++) {
+                if(pattern[j][2-j] !== color) {
+                    win = false
+                }
+            }
+            if(win)
+                return true;
+        }
+        {
+            let win = true;
+            for(let j=0; j<3; j++) {
+                if(pattern[j][j] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        return false;
+    }
+    show (pattern)
+</script>
