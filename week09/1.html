@@ -47,14 +47,17 @@
 
     function move(x,y) {
         pattern[y][x] = color;
-        show()
-        if (check()) {
-            alert(color==2 ? "X won!": ' O won!');
+        if (check(pattern, color)) {
+            alert(color==2 ? 'X won!': ' O won!');
         }
         color = 3 - color;  // 不断地从1变2，从2变1
+        show();
+        if(willWin(pattern, color)) {
+            console.log(color ==2 ? 'X will win' : 'O will win');
+        }
     }
 
-    function check() {
+    function check(pattern, color) {
         // 总是取当前的 color 来判断，因为刚刚落完子
         // 但是 color 是不是要传进来呢？难道是 global 的？
         for(let i=0; i<3; i++) {
@@ -80,7 +83,7 @@
                 return true
             }
         }
-        {
+        { // 为了让 win 变成一个局部变量，我们加了{}，可以反复赋值和判断
             let win = true;
             for(let j=0; j<3; j++) {
                 if(pattern[j][2-j] !== color) {
@@ -102,5 +105,24 @@
         }
         return false;
     }
-    show (pattern)
+
+    function clone(pattern) {
+        return JSON.parse(JSON.stringify(pattern));
+    }
+
+    function willWin(pattern, color) {
+        for (let i = 0; i<3; i++) {
+            for(let j=0; j<3; j++) {
+                if(pattern[i][j])
+                    continue;
+                let tmp = clone(pattern)
+                tmp[i][j] = color
+                if (check(tmp, color)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    show (pattern);
 </script>
