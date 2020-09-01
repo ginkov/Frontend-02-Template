@@ -17,10 +17,10 @@
 <script>
     let pattern = [
         [0, 0, 0],
-        [0, 0, 0],
+        [0, 1, 0],
         [0, 0, 0]
     ]
-    let color = 1;
+    let color = 2;  // 人走X
     function show() {
         let board = document.getElementById('board');
         board.innerHTML = "";
@@ -33,7 +33,7 @@
                 cell.innerText = 
                     pattern[i][j] == 2? 'X':
                     pattern[i][j] == 1? 'O': '';
-                cell.addEventListener('click', () => move(j,i))
+                cell.addEventListener('click', () => userMove(j,i))
                 /*
                     注意，由于我们使用了 let, 作用域有效, i,j 每次循环被保留下来
                     如果是 var, cell.addEventListener 最后都成了 move(3,3)
@@ -43,6 +43,28 @@
             }
             board.appendChild(document.createElement('br'))
         }
+    }
+
+    function userMove(x,y) {
+        pattern[y][x] = color;
+        if(check(pattern, color)) {
+            alert(color ==2 ? 'X won!' : 'O won!');
+        }
+        color = 3 - color;
+        show();
+        computerMove();
+    }
+
+    function computerMove() {
+        let choice = bestChoice(pattern, color);
+        console.log('computer choice = ', choice);
+        if(choice.point)
+            pattern[choice.point[1]][choice.point[0]] = color;
+        if(check(pattern,color)) {
+            alert(color == 2 ? 'X won!': 'O won!');
+        }
+        color = 3 - color;
+        show();
     }
 
     function move(x,y) {
@@ -109,6 +131,8 @@
 
     function clone(pattern) {
         return JSON.parse(JSON.stringify(pattern));
+        // return Object.create(pattern)  //变成一维数据之后，可以很方便地进行 Clone
+        // 这样可以减少内存空间
     }
 
     function willWin(pattern, color) {
@@ -120,7 +144,7 @@
                 let tmp = clone(pattern)
                 tmp[i][j] = color
                 if (check(tmp, color)) {
-                    return true;
+                    return [j,i];
                 }
             }
         }
