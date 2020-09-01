@@ -16,8 +16,8 @@
 <div id="board"></div>
 <script>
     let pattern = [
-        [2, 0, 0],
-        [0, 1, 0],
+        [0, 0, 0],
+        [0, 0, 0],
         [0, 0, 0]
     ]
     let color = 1;
@@ -51,6 +51,7 @@
             alert(color==2 ? 'X won!': ' O won!');
         }
         color = 3 - color;  // 不断地从1变2，从2变1
+        console.log(bestChoice(pattern, color));
         show();
         if(willWin(pattern, color)) {
             console.log(color ==2 ? 'X will win' : 'O will win');
@@ -111,6 +112,7 @@
     }
 
     function willWin(pattern, color) {
+        // 思路是把空的格子填上 X 或 O (color)，看看会不会赢
         for (let i = 0; i<3; i++) {
             for(let j=0; j<3; j++) {
                 if(pattern[i][j])
@@ -122,7 +124,40 @@
                 }
             }
         }
-        return false;
+        return null;
+    }
+
+    function bestChoice(pattern, color) {
+        let p;
+        if(p = willWin(pattern, color)) {
+            return {
+                point: p,
+                result: 1  // 判断可能的输赢 -1, 输 0, 和, 1, 赢
+            }
+        }
+        // 考虑我们下每个点之后，对方的最好的选择比较差的话，我们就赢了
+        let result = -2
+        let point = null;
+        for(let i =0; i<3; i++) {
+            for(let j=0; j<3; j++) {
+                if(pattern[i][j])
+                    continue;
+                let tmp = clone(pattern);
+                tmp[i][j] = color;
+                let r = bestChoice(tmp, 3- color).result;
+                
+                if(-r > result) {
+                    result = -r;
+                    point = [j,i];
+                }
+                // 这里还可以加个逻辑，如果找到 result = 1 的点就停，这叫 Win-lost 剪枝
+            }
+        }
+        return {
+            point: point,
+            result: point ? result : 0 // 和棋
+        }
     }
     show (pattern);
+    console.log(bestChoice(pattern, color));
 </script>
