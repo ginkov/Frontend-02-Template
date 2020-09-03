@@ -14,9 +14,34 @@
     }
 </style>
 <div id="container"></div>
-<button onclick="localStorage['amp'] = JSON.stringify(map)">Save</button>
+<button onclick="localStorage['map'] = JSON.stringify(map)">Save</button>
 
 <script>
+
+class Sorted{
+    constructor (data, compare) {
+        this.data = data.slice();
+        this.compare = compare || ((a, b) => a - b);
+    }
+    take () { // 每次 take 的时候，拿出来一个最小的
+        if (! this.data.length) return;
+        let min = this.data[0];
+        let minIndex = 0; // 最小的位置，默认从0开始
+         
+        for (let i = 1; i < this.data.length; i++) {
+            if(this.compare(this.data[i], min) < 0) {
+                min = this.data[i]
+                minIndex = i;
+            }
+        }
+        this.data[minIndex] = this.data[this.data.length - 1]; // 把最后一个元素代替 min
+        this.data.pop (); // 然后把最后一个元素pop掉
+        return min;
+    }
+    give (v) {
+        this.data.push(v);
+    }
+}
 let map = localStorage['map'] ? JSON.parse(localStorage['map']) : Array(10000).fill(0);
 
 let container = document.getElementById('container');
@@ -57,35 +82,58 @@ function sleep(t) {
     })
 }
 
-//function path(map, start, end) {
-async function path(map, start, end) {
+async function findPath(map, start, end) {
     // 各搜索算法的差异就在于Queue
     // queue 先进先出
     // js 数据的 push / pop; shift / unshift 可以天然模拟栈和队列
     // 如果改成 stack，就是深度优先搜索
-    var queue = [start];
+    let table = Object.create(map);
+    let queue = new Sorted([start], (a,b) => distance (a) - distance (b));
+    console.log('begin to find path')
 
-    async function insert(x,y) {
+    async function insert(x, y, pre) {
         if(x<0 || x>= 100 || y<0 || y>=100) // 如果出界就停
             return;
-        if( map[ y * 100 + x ] )  // 如果撞墙，或者也是路，就停
+        if( table[ y * 100 + x ] )  // 如果撞墙，或者也是路，就停
             return;
-        await sleep(30);
+
+        await sleep(5);
         container.children[ y * 100 + x].style.backgroundColor = 'lightgreen'; // 直接取 container 的 children 了
-        map[y * 100 + x] = 2;  // 标记找过的点  
-        queue.push([x,y]);
+        table[y * 100 + x] = pre;  // 标记找过的点  
+        queue.give([x, y]);
     }
 
-    while(queue.length) {
-        let [x,y] = queue.shift();
+    function distance1 (point) {
+        return (point[0] - end[0]) ** 2 + (point[1] - end[1]) ** 2;
+    }
+
+    function distance (point) {
+        ax = end[0] > point[0] ? end[0] - point[0] : point[0] - end[0]
+        ay = end[1] > point[1] ? end[1] - point[1] : point[1] - end[1]
+        return ax > ay ? ax : ay
+    }
+    console.log('queue length = ', queue.length);
+    while(queue.data.length) {
+        let [x,y] = queue.take();
         console.log(x,y);
         if(x === end[0] && y === end[1]) {
-            return true;
+            let path = [];
+            while(x != start[0] || y != start[1]) {
+                path.push(map[y * 100 + x]);
+                [x, y] = table[y * 100 + x];
+                container.children[y * 100 + x].style.backgroundColor = 'purple';
+            }
+            return path;
         }
-        await insert(x-1, y);  // async 调用时要用 await
-        await insert(x, y-1);
-        await insert(x+1, y);
-        await insert(x, y+1);
+        await insert(x-1, y, [x,y]);  // async 调用时要用 await
+        await insert(x, y-1, [x,y]);
+        await insert(x+1, y, [x,y]);
+        await insert(x, y+1, [x,y]);
+
+        await insert(x-1, y-1, [x,y]);
+        await insert(x+1, y-1, [x,y]);
+        await insert(x-1, y+1, [x,y]);
+        await insert(x+1, y+1, [x,y]);
     }
     return false
 
