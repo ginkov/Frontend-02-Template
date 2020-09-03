@@ -1,0 +1,137 @@
+<style>
+    div {
+        background-color: grey;
+        display: inline-block;
+        margin: 30px;
+        width: 100px;
+        height: 100px;
+        border-radius: 50px;
+    }
+
+    .green.light {
+        background-color: green;
+    }
+
+    .yellow.light {
+        background-color: yellow;
+    }
+
+    .red.light {
+        background-color: red;
+    }
+</style>
+
+<div class="green"></div>
+<div class="yellow"></div>
+<div class="red"></div>
+<button id="next">next</button>
+
+<script>
+    function green() {
+        var lights = document.getElementsByTagName('div');
+        for (var i=0 ; i<3; i++) {
+            lights[i].classList.remove('light')
+        }
+        document.getElementsByClassName('green')[0].classList.add('light')
+    }
+
+    function red() {
+        var lights = document.getElementsByTagName('div');
+        for (var i=0 ; i<3; i++) {
+            lights[i].classList.remove('light')
+        }
+        document.getElementsByClassName('red')[0].classList.add('light')
+    }
+
+    function yellow() {
+        var lights = document.getElementsByTagName('div');
+        for (var i=0 ; i<3; i++) {
+            lights[i].classList.remove('light')
+        }
+        document.getElementsByClassName('yellow')[0].classList.add('light')
+    }
+
+    // 增加一个名为 sleep 的 Promise 函数
+    function sleep(t) {
+        return new Promise((resolve, reject)=> {
+            setTimeout(resolve, t);
+        })
+    }
+
+    function happen(element, eventName) {
+        // 只要看到 return Promise 的结果，它其实也是一种 async 函数
+        return new Promise((resolve, reject)=> {
+            element.addEventListener(eventName, resolve, {once: true});
+        })
+    }
+
+    // 使用 Generator 模拟 Promise 的情况
+    // 早年没有 Async 函数，用 Generator 代替
+    function* go() { //函数后面加* 表示是个 Generator 函数
+        while(true) {
+            green()；
+            yield sleep(1000)
+            yellow();
+            yield sleep(200)
+            red();
+            yield sleep(500)
+        }
+    }
+
+    function run(iterator) {
+        let {value, done} = iterator.next();
+        if(done)
+            return;
+        if(value instanceof Promise)
+            value.then(()=> {
+                run(iterator)
+            })
+    }
+
+
+    // 函数前面使用了 Async 关键字，就可以使用 Await
+    // 另外，这样的好处是其它
+    /*
+    async function go() {
+        while(true) { // 传统上用于同步的，也能用于异步
+            green();
+            //await sleep(1000); // 等待一个 Promise 的结束
+            await happen(document.getElementById('next'), 'click');
+            yellow();
+            await happen(document.getElementById('next'), 'click');
+            // await sleep(200);
+            red();
+            await happen(document.getElementById('next'), 'click');
+            // await sleep(500);
+        }
+    }
+    */
+
+    /* promise 的版本
+    function go() {
+        green()
+        sleep(1000).then(()=>{
+            yellow();
+            return sleep(200);
+        }).then(()=>{
+            red();
+            return sleep(500);
+        }).then(go)
+    }
+    */
+
+    /* 最原始的 callback
+    function go() {
+        green()
+        setTimeout(function() {
+            yellow()
+            setTimeout(function(){
+                red()
+                setTimeout(function() {
+                    go()
+                }, 5000);
+            }, 2000);
+        }, 1000);
+    }
+    */
+</script>
