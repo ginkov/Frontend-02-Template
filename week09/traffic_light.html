@@ -1,0 +1,78 @@
+<html>
+<style>
+.traffic-light {
+    margin: 40px;
+    width: 50px;
+    height: 50px;
+    background-color: #aaa;
+    border: 1px solid #666;
+    border-radius: 25px;
+}
+</style>
+<body>
+<h4>我是酷酷的红绿灯</h4>
+<div class="traffic-light" id="l1">
+</div>
+<div class="traffic-light" id="l2">
+</div>
+<div class="traffic-light" id="l3">
+</div>
+</body>
+<script>
+var UNIT = 400;
+
+function red1() {
+  // set traffic_light to red
+  document.getElementById('l1').style.backgroundColor='#e33';
+  setTimeout(green1, 5*UNIT)
+}
+function green1() {
+  // set traffic_light to green
+  document.getElementById('l1').style.backgroundColor='#3a3';
+  setTimeout(yellow1, 10*UNIT)
+}
+function yellow1() {
+  // set traffic_light to yellow
+  document.getElementById('l1').style.backgroundColor='#EE3';
+  setTimeout(red1, 2*UNIT)
+}
+
+function red2() {
+  // set traffic_light to red
+  document.getElementById('l2').style.backgroundColor='#e33';
+  setTimeout(green2, 5*UNIT)
+}
+function green2() {
+  // set traffic_light to green
+  document.getElementById('l2').style.backgroundColor='#3a3';
+  setTimeout(yellow2, 10*UNIT)
+}
+function yellow2() {
+  // set traffic_light to yellow
+  document.getElementById('l2').style.backgroundColor='#EE3';
+  setTimeout(red2, 2*UNIT)
+}
+
+function red3() {
+  // set traffic_light to red
+  document.getElementById('l3').style.backgroundColor='#e33';
+  setTimeout(green3, 5*UNIT)
+}
+function green3() {
+  // set traffic_light to green
+  document.getElementById('l3').style.backgroundColor='#3a3';
+  setTimeout(yellow3, 10*UNIT)
+}
+function yellow3() {
+  // set traffic_light to yellow
+  document.getElementById('l3').style.backgroundColor='#EE3';
+  setTimeout(red3, 2*UNIT)
+}
+
+red1()
+yellow2()
+green3()
+
+</script>
+
+</html>
