@@ -1,0 +1,22 @@
+<script>
+// 括号表示捕获
+// 用或分开，每次只会匹配到一个分支里面
+var regexp = /([0-9\.]+)|([ \t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)/g
+var dictionary = ['Number', 'Whitespace', 'LineTerminator', '*', '/', '+', '-']
+
+function tokenize(src) {
+    var result = null;
+    while(true) {
+        result = regexp.exec(src)
+        if(!result) break;
+        for(var i = 1; i <= dictionary.length; i++) {
+            if(result[i]) {
+                console.log(dictionary[i-1]);
+            }
+        }
+        console.log(result)
+    }
+}
+
+tokenize('1024 + 10 * 25')
+</script>

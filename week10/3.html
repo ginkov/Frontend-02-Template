@@ -1,0 +1,64 @@
+<script>
+// 括号表示捕获
+// 用或分开，每次只会匹配到一个分支里面
+var regexp = /([0-9\.]+)|([ \t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)/g
+var dictionary = ['Number', 'Whitespace', 'LineTerminator', '*', '/', '+', '-']
+
+// ? function* 是什么鬼? 生成器???
+function* tokenize(src) {
+    var result = null;
+    var lastIndex = 0;
+
+    while(true) {
+        lastIndex = regexp.lastIndex;
+        result = regexp.exec(src)
+
+        if(!result)
+            break;
+        if(regexp.lastIndex - lastIndex > result[0].length)
+            break;  // 这里是做长度校验，应该 Throw 一个 Error 出来
+
+        let token = {
+            type: null,
+            value: null
+        }
+
+        for(var i = 1; i <= dictionary.length; i++) {
+            if(result[i]) {
+                token.type = dictionary[i-1];
+            }
+        }
+        token.value = result[0]
+        yield token; // 返回一个序列时，用 yield
+    }
+    yield {
+        type: 'EOF'
+    }
+    
+}
+let source = [];
+
+for(let token of tokenize('10 * 25')){
+    if(token.type !== 'Whitespace' && token.type !== 'LineTerminator')
+    source.push(token)
+}
+
+function Expression(tokens) {
+
+}
+
+function AE(source) {
+
+}
+
+function ME(source) {
+    console.log(source)
+}
+
+ME(source)
+
+// for(let token of tokenize("1024 + 10 * 25")) {
+//     console.log(token)
+// }
+
+</script>

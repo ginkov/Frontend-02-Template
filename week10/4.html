@@ -1,0 +1,95 @@
+<script>
+// 括号表示捕获
+// 用或分开，每次只会匹配到一个分支里面
+var regexp = /([0-9\.]+)|([ \t]+)|([\r\n]+)|(\*)|(\/)|(\+)|(\-)/g
+var dictionary = ['Number', 'Whitespace', 'LineTerminator', '*', '/', '+', '-']
+
+// ? function* 是什么鬼? 生成器???
+function* tokenize(src) {
+    var result = null;
+    var lastIndex = 0;
+
+    do {
+        lastIndex = regexp.lastIndex;
+        result = regexp.exec(src)
+
+        if(!result) break;
+
+        let token = {
+            type: null,
+            value: null
+        }
+
+        for(var i = 1; i <= dictionary.length; i++) {
+            if(result[i]) {
+                token.type = dictionary[i-1];
+            }
+        }
+        token.value = result[0]
+        yield token; // 返回一个序列时，用 yield
+    } while(result)
+
+    yield { type: 'EOF' }
+    
+}
+let source = [];
+
+for(let token of tokenize('10 * 25')){
+    if(token.type !== 'Whitespace' && token.type !== 'LineTerminator')
+    source.push(token)
+}
+
+function Expression(tokens) {
+
+}
+
+function AE(source) {
+
+}
+
+function ME(source) { // 分三种情况处理
+    if(source[0].type === 'Number') {
+        let node = {
+            type:'ME',
+            children: [source[0]]
+        }
+        source[0] = node
+        return ME(source)
+    }
+    if(source[0].type === 'ME' && source[1] && source[1].type === '*') {
+        // 乘除是可以写在一起的，Demo 中为了 */ 分开写一起了
+        let node = {
+            type: 'ME',
+            operator: '*',
+            children: []
+        }
+        // 为什么要把前三项移出来？
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        source.unshift(node)
+        return ME(source)
+    }
+    if(source[0].type === "ME" && source[1] && source[1].type === '/') {
+        let node = {
+            type: 'ME',
+            operator: '/',
+            children: []
+        }
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        node.children.push(source.shift())
+        source.unshift(node)
+        return ME(source)
+    }
+    if(source[0].type === 'ME') return source[0]
+    return ME(source) // 这里应该不会执行
+}
+
+console.log(ME(source))
+
+// for(let token of tokenize("1024 + 10 * 25")) {
+//     console.log(token)
+// }
+
+</script>
