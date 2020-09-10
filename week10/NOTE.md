@@ -154,7 +154,39 @@ pattern:  **abcdabce**
 
 source: **abcdabcdabcex**
 
-最关键的是要关注字符串的自重复行为。
+最关键的是要关注字符串的自重复行为。 ==是Pattern 里面的重复，还是 Source的重复？==
+
+==我觉得是 Source 里面的重复，想想，如果 Source 没有重复，那就直接找了==
+
+不过看老师的视频，好像说得是 Pattern，尴尬。。。
+
+### 先看 Pattern
+
+先建立一个 Pattern 串数组，比如
+
+[a, b, c, d, a, b, c, e]   然后填上到此有几个字母是重复的。
+
+[0, 0, 0, 0, 0, 1, 2, 3]
+
+建立 KMP 的回退表格
+
+==如果 Pattern 本身里面不重复，KMP 算法是不是就没有意义？==
+
+自己推导一下  aabaaac
+
+a a b a a a c
+
+0 0 1 0 1 2 2
+
+另外，自己随手写了一个
+
+a b a b e f a b a b c，我认为是
+
+0 0 0 1 2 0 0 1 2 3 4
+
+
+
+// Let code 问题 28
 
 # 9. Wildcard
 
