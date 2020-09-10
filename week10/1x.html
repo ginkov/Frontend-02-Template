@@ -1,0 +1,52 @@
+<script>
+    let $ = Symbol('$')  // Symbol 不可重复的特点，让 $ 为截止符
+    class Trie {
+        constructor () {
+            // 可以用 Object 和 Map
+            // 因为是存字符串，所以 Object 就够了。
+            // 用 Object.create(null) 来创建字符串，避免受到污染
+            this.root = Object.create(null)
+        }
+        insert (word) {
+            // 把串插入字典树里面
+            let node = this.root
+
+            // 从 root 开始，逐级把串入进子树里去
+            for(let c of word) {
+                if(!node[c])
+                    node[c] = Object.create(null)
+                node = node[c]
+            }
+            // 以 $ 为截止符
+            if(!($ in node)) node[$] = 0
+            node[$] ++  // 截止符实际代表了本单词的个数
+        }
+        most() {
+            let max = 0
+            let maxWord = null
+            let visit = (node, word) => {
+                if(node[$] && node[$] > max) {
+                    max = node[$]
+                    maxWord = word
+                }
+                for(let p in node) {
+                    visit(node[p], word + p)
+                }
+            }
+            visit(this.root, '')
+            console.log(maxWord, max)  // 计算出最多的词和词频
+        }
+    }
+
+    function randomWord(length) {
+        var s = ''
+        for(let i = 0; i < length; i++)
+            s += String.fromCharCode(Math.random() * 20 + 'a'.charCodeAt(0))
+        return s
+    }
+    
+    let trie = new Trie()
+    for(let i = 0; i < 100000; i++) {
+        trie.insert(randomWord(4))
+    }
+</script>
