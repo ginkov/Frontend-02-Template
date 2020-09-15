@@ -1,0 +1,20 @@
+<script>
+    let object = {
+        a: 1,
+        b: 2
+    }
+    // 普通的对象不可被监听，通过 Proxy 监听
+
+    let po = new Proxy(object, {
+        // 相当于拦截了 Set 的行为
+        set(obj, prop, val) {
+            console.log(obj, prop, val);
+        }
+    })
+
+    // 通过 po.a=3 来调用 
+    // 和 Getter, Setter 的区别，是即使设一个没有的属性，也会触发set
+    // 比如 po.x=5
+
+    // 调用原始的 object 并不会触发 proxy hook 上的函数, 只有调用 po 的内容才会
+</script>
