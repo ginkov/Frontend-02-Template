@@ -1,8 +1,12 @@
 <script>
     let callbacks = new Map();
+    let reactivities = new Map();
+
     let usedReactivities = [];
+
     let object = {
-        a: 1,
+        // a: 1,
+        a: {b: 3}, // 如果不优化就监听不到
         b: 2
     }
     // 普通的对象不可被监听，通过 Proxy 监听
@@ -24,7 +28,7 @@
     // po 相当于一种特殊的对象，它上面的所有行为都是可以指定的
 
     effect(()=> {
-        console.log(po.a)
+        console.log(po.a.b)
     })
     // 但是这里有一个严重的性能问题，Callback 是全局的
     // 接下来看看，能否在仅在某个变量变化的时候，才触发某个函数的设用
@@ -49,12 +53,16 @@
         // callbacks.add()
     }
     function reactive(object) {
-        return new Proxy(object, {
+        if(reactivities.has(object))
+            return reactivities.get(object);
+
+        let proxy = new Proxy(object, {
             set(obj, prop, val) {
                 obj[prop] = val;
                 if(callbacks.get(obj)){
-                    if(callbacks.get(obj).get(prop                 for(let callback of callbacks.get(reactivity[0]).get(reactivity[1])){
-                            callback()
+                    if(callbacks.get(obj).get(prop))
+                        for(let callback of callbacks.get(obj).get(prop)){
+                            callback();
                         }
                 }
                 // console.log(obj, prop, val)
@@ -65,10 +73,14 @@
             },
             get(obj, prop) {
                 // console.log(obj, prop)
-                usedReactivities.push(obj, prop)
-                return obj[prop]
+                usedReactivities.push([obj, prop]);
+                if(typeof obj[prop] === 'object')
+                    return reactive(obj[prop]);
+                return obj[prop];
             }
         })
+        reactivities.set(object, proxy)
+        return proxy
     }
 
     // 其实函数对象也有 Proxy，但是这里就不讲了。
