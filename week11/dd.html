@@ -1,0 +1,33 @@
+<div id="dragable" style="width: 100px; height: 100px; background-color: pink;">
+</div>
+
+<script>
+    let dragable = document.getElementById('dragable');
+    // 系统本身有 drag / drop 事件
+    // 但这并不是我们想要的事件，我们需要它完全跟着鼠标移动
+    // 我们使用 mouse up mouse down 来模拟
+
+    // 要记录鼠标的起始位置
+    let baseX = 0, baseY =0;
+
+    // 要在 mousedown 的时候才开始监听，只有这样才能在性能上和逻辑上都正确
+    dragable.addEventListener('mousedown', function(event){
+        // 挺拽里面非常重要的技巧是在 document 里面监听 mousemove 和 mouseup
+        // 如果在 dragable 上监听不行，因为如果我们拖拽的快了，出了 dragable 区域
+        // 就会出现断拖的情况
+        let startX = event.clientX, startY = event.clientY;
+
+        let up = (event) => {
+            baseX += event.clientX - startX;
+            baseY += event.clientY - startY;
+            document.removeEventListener('mousemove', move)
+            document.removeEventListener('mouseup', up)
+        };
+        let move=(event) => {
+            dragable.style.transform = `translate(${baseX + event.clientX - startX}px, ${baseY + event.clientY - startY}px)`
+        }
+        document.addEventListener('mousemove', move)
+        document.addEventListener('mouseup', up)
+    })
+
+</script>
