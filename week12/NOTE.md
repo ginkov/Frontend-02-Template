@@ -160,7 +160,91 @@ Children 是构建组件树的最重要的组件特性。
 
 # 2. |为组件添加 JSX 语法
 
+组件系统：由 Markup 和 JS 代码，两者都可访问的环境。
+
+这里展示两种：
+
+* JSX
+* VUE 类似的标记语法的 Parser
+
+本节课讲 JsX。JSX实际不仅仅用于 React，还可以用于别的地方。
+
+## 配置 JsX 环境
+
+```bash
+mkdir jsx; cd jsx
+npm init  # 接受所有的默认选项
+```
+
+这样 npm 就创建好了。可以使用 npx 去直接使用 webpack，也可以使用全局安装 Webpack CLI 的形式。
+
+```bash
+npm install -g webpack webpack-cli  # 安装  webpack
+webpack --version # 安装之后，查看 webpack 的版本
+```
+
+还需要安装  babel 系列：因为 JsX 是 babel 的一个插件。所以我们需要依次安装：
+
+* webpack
+* babel-loader, babel, 以及 babel 的 plugin
+
+所以配置 JSX 是很麻烦的。
+
+## 关于 Webpack
+
+把一个普通的 JS 文件，以及它的 import, require 引入的依赖，打包到一起。
+
+babel 可以把新版本的 JS 编译成老版本的 JS ，以便在老版本的环境中运行。
+
+```bash
+npm install --save-dev webpack babel-loader # 安装到本地目录   可以webpack 不是在全局已经装过了？
+```
+
+babel-loader 实际上是 webpack 的一个组件，是 webpack 的 babel-loader，纯粹的 babel-loader是跑不起来的。
+
+接下来创建 webpack.config.js
+
+```javascript
+module.exports = {
+	entry： ‘./main.js'
+}
+```
+
+创建 main.js
+
+然后运行 webpack，可以看到多了一个 dist 目录。
+
+接下来安装  babel  -- 注意 babel-loader 本身并不依赖于 babel，所以 babel-loader 装了，也还要装  babel
+
+安装 babel core 和 babel/preset-env
+
+```bash
+npm install --save-dev @babel/core @babel/preset-env
+```
+
+babel 如果只装一个 core它其实啥也不会干，所以我们还要安装一个它的 preset-env
+
+使用 babel 可以看到原来写的 for .. of 被编译成普通的for 循环。这就是 babel/preset-env 的效果了。
+
+在 webpack.config.js 中加入 mode 配置，指定其为 development 模式。再运行 webpack，可以看到生成的代码是没有压缩过的，特别长。
+
+安装  babel-plugin
+
+
+
 # 3. | JSX 的基本使用方法
+
+JSX 相当于一代码的简化写法。它 Build 之后，转换成 React.createElement 这样的调用。
+
+可在 webpack.config.js 的 JSX Plugin 里面增加一个配置。pragma:createElement
+
+这样一改，JSX 就和 React 没有任何联系了。
+
+
+
+给 createElement传了两个参数，第一个是 div, 第二个是 null
+
+JSX 实际上是看起来比较像 HTML 的函数调用。有点像语法糖，但是影响了代码的结构。
 
 # 4. 轮播组件 | (一)
 
