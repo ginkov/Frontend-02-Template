@@ -15,49 +15,13 @@ class Carousel extends Component {
             // 不建议用 img，因为可拖拽。
             let child = document.createElement('div');
             child.style.backgroundImage=`url('${record}')`;
+
+            // child.style.display='none';
+            // child.src = record;
             this.root.appendChild(child)
         }
-        let posistion = 0;
-        // 监听的技巧，在 mousedown 之后才监听 mousemove，在 mouseup 后就不再监听 mousemove
-        this.root.addEventListener('mousedown', event => {
-            console.log('mousedown')
-            let children = this.root.children;
-            // let startX = event.clientX, startY = event.clientY
-            // 只需要 X 的序列，不需要 Y 的序列
-            let startX = event.clientX
-            let move = event => {    // let x = event.clientX - startX, y = event.clientY - startY;
-                // 只需要管 X 的序列
-                let x = event.clientX - startX;
-                // Browser 中可渲染区域的坐标
-                // 不受任何其它因素的影响，即使在滚动的容器中。
-                for(let child of children) {
-                    child.style.transition = "none";
-                    child.style.transform = `translateX(${-posistion *500+ x}px)`;
-                }
-                
-            }
-            let up = event => {
-                // console.log('mouseup')
-                // this.root.removeEventListener('mousemove', move)
-                let x = event.clientX - startX
-                posistion -= Math.round(x/500);
-                for(let child of children){
-                    child.style.transition = '';
-                    child.style.transform = `translateX(${-posistion*500}px)`
-                }
-                document.removeEventListener('mousemove', move)
-                // this.root.removeEventListener('mouseup', up)
-                document.removeEventListener('mouseup', up)
-            }
-            document.addEventListener('mousemove', move)
-            document.addEventListener('mouseup', up)
-            // this.root.addEventListener('mousemove', move)
-            // this.root.addEventListener('mouseup', up)
-        })
-
-
-        /* 把自动播放关掉
         let currentIndex = 0;
+
         setInterval(()=>{
             let children = this.root.children;
             let nextIndex = (currentIndex + 1) % children.length;
@@ -81,7 +45,6 @@ class Carousel extends Component {
             //     child.style.transform = `translateX(-${current * 100}%)`;
             // }
         }, 600)
-        */
         return this.root;
     }
     mountTo(parent) {
