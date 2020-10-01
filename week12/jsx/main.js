@@ -28,12 +28,22 @@ class Carousel extends Component {
             let move = event => {    // let x = event.clientX - startX, y = event.clientY - startY;
                 // 只需要管 X 的序列
                 let x = event.clientX - startX;
+
+                // 要让鼠标能来回的拨
+                // 先算出来当前屏幕上的元素的位置
+                let current = posistion - ((x-x%500)/500);
+                for(let offset of [-1, 0, 1]) {
+                    let pos = current + offset;
+                    pos = (pos+ children.length) % children.length
+                    children[pos].style.transition = "none";
+                    children[pos].style.transform = `translateX(${-pos * 500 + offset * 500 + x % 500}px)`
+                }
                 // Browser 中可渲染区域的坐标
                 // 不受任何其它因素的影响，即使在滚动的容器中。
-                for(let child of children) {
-                    child.style.transition = "none";
-                    child.style.transform = `translateX(${-posistion *500+ x}px)`;
-                }
+                // for(let child of children) {
+                //     child.style.transition = "none";
+                //     child.style.transform = `translateX(${-posistion *500+ x}px)`;
+                // }
                 
             }
             let up = event => {
@@ -41,12 +51,14 @@ class Carousel extends Component {
                 // this.root.removeEventListener('mousemove', move)
                 let x = event.clientX - startX
                 posistion -= Math.round(x/500);
-                for(let child of children){
-                    child.style.transition = '';
-                    child.style.transform = `translateX(${-posistion*500}px)`
+                for(let offset of [0, -Math.sign(Math.round(x/500)-x+250*Math.sign(x))]) {
+                    let pos = posistion + offset;
+                    pos = (pos+ children.length) % children.length
+                    children[pos].style.transition = "";
+                    children[pos].style.transform = `translateX(${-pos * 500 + offset * 500}px)`
                 }
+                
                 document.removeEventListener('mousemove', move)
-                // this.root.removeEventListener('mouseup', up)
                 document.removeEventListener('mouseup', up)
             }
             document.addEventListener('mousemove', move)
