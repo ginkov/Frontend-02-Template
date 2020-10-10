@@ -1,6 +1,6 @@
 import {Component, createElement} from './framework.js'
 import {Carousel} from './carousel.js'
-import {Timeline} from './animation.js'
+import {Timeline, Animation} from './animation.js'
 // 如果是大写的 Div, 就不加引号，不成字符串了，认为你的 div 是个类 class
 // let a = <Div id="a">
 //     <span>a</span>
@@ -19,4 +19,8 @@ let a = <Carousel src={d}/>
 a.mountTo(document.body)
 
 let tl = new Timeline();
+window.tl = tl;
+window.animation = new Animation({set a(v) {console.log(v)}}, 'a', 0, 100, 1000, 200, null);
+// tl.add(new Animation({set a(v) {console.log(v)}}, 'a', 0, 100, 1000, null));
+// console.log('new animation added')
 tl.start();

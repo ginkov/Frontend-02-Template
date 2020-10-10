@@ -183,6 +183,8 @@ npm install -g webpack webpack-cli  # 安装  webpack
 webpack --version # 安装之后，查看 webpack 的版本
 ```
 
+**依次安装 babel-loader, babel, 和 babel 的 plugin**
+
 还需要安装  babel 系列：因为 JsX 是 babel 的一个插件。所以我们需要依次安装：
 
 * webpack
@@ -200,13 +202,28 @@ babel 可以把新版本的 JS 编译成老版本的 JS ，以便在老版本的
 npm install --save-dev webpack babel-loader # 安装到本地目录   可以webpack 不是在全局已经装过了？
 ```
 
-babel-loader 实际上是 webpack 的一个组件，是 webpack 的 babel-loader，纯粹的 babel-loader是跑不起来的。
+babel-loader 实际上是 webpack 的一个组件，是 webpack 的 babel-loader，**纯粹的 babel-loader是跑不起来的**。
 
 接下来创建 webpack.config.js
 
 ```javascript
 module.exports = {
-	entry： ‘./main.js'
+	entry： ‘./main.js',
+    module: {
+    	rules: [
+    		{
+    			test: /\.js$/,
+    			use: {
+    				loader: 'babel-loader',
+    				options: {
+    					presets: ['@babel/preset-env'],
+                        plugins: [['@babel/plugin-transform-react-jsx',{pragma:'createElement'}]]
+					}
+				}
+			}
+    	]
+	},
+	mode: 'development'
 }
 ```
 
@@ -214,7 +231,11 @@ module.exports = {
 
 然后运行 webpack，可以看到多了一个 dist 目录。
 
-接下来安装  babel  -- 注意 babel-loader 本身并不依赖于 babel，所以 babel-loader 装了，也还要装  babel
+
+
+### 安装 babel
+
+接下来安装  babel  -- **注意 babel-loader 本身并不依赖于 babel，所以 babel-loader 装了，也还要装  babel**
 
 安装 babel core 和 babel/preset-env
 
@@ -228,7 +249,11 @@ babel 如果只装一个 core它其实啥也不会干，所以我们还要安装
 
 在 webpack.config.js 中加入 mode 配置，指定其为 development 模式。再运行 webpack，可以看到生成的代码是没有压缩过的，特别长。
 
-安装  babel-plugin
+#### 安装  babel-plugin
+
+```
+npm install --save-dev @babel/plugin-transform-react-jsx
+```
 
 
 
@@ -251,6 +276,26 @@ JSX 实际上是看起来比较像 HTML 的函数调用。有点像语法糖，�
 对 class 的行为进行修改。
 
 # 4. 轮播组件 | (一)
+
+在调试的时候，希望方便一些。安装  webpack 的 dev tool
+
+```
+npm install --save-dev webpack-dev-server webpack-cli
+```
+
+之后再启动 webpack-dev-server
+
+```
+webpack-dev-server
+```
+
+这个在 Windows 下不知怎么，不能直接启动，必须修改 package.json，然后再运行 
+
+```
+npm run dev
+```
+
+
 
 # 5. |(二)
 
