@@ -1,24 +1,44 @@
 let element = document.documentElement;
 
+let isListeningMouse = false;
+
 element.addEventListener('mousedown', event => {
+
     let context = Object.create(null) // 好习惯
+    
+    //统一用 start, move, end 处理鼠标事件
+    start(event, context);
+
     // mousemove 事件有一个 button 属性，是5位二进制，按掩码取的
     // 我们要把 mousedown 的这个按键，与 mousemove 的相对应
     contexts.set("mouse"+ (1 << event.button), context);
-    //统一用 start, move, end 处理鼠标事件
-    start(event, context);
+
     let mousemove = event => {
         let button = 1;
         // event.buttons 用二进制掩码表示鼠标哪个键被按下来了
+        // console.log("mouse move buttons: ", event.buttons)
         while(button <= event.buttons) {
-            let context = contexts.get("mouse" + event.button)
-            move(event, context)
+            if(button & event.buttons) {
+                // order of buttons vs button are not same.
+                let key;
+                if(button === 2)
+                    key = 4;
+                else if (button === 4)
+                    key = 2;
+                else
+                    key = button
+                // buttons 的顺序与 button 的定义不一样。
+                // buttons 是左、中、右, 而不像 button 的定义是 左0, 右1, 中2
+                let context = contexts.get("mouse"+ key)
+                move(event, context)
+            }
             button = button << 1;
         }
-
--    };
+    };
     let mouseup = event => {
+        let context = contexts.get("mouse" + (1<<event.button));
         end(event, context)
+        contexts.delete("mouse" + (1<<event.button))
         element.removeEventListener('mousemove', mousemove);
         element.removeEventListener('mouseup', mouseup);
     };
@@ -90,7 +110,7 @@ let start = (point, context) => {
     }, 500)
 }
 
-let move =(point, context) => {
+let move = (point, context) => {
     // 是否移动 10px
     let dx = point.clientX - context.startX, dy = point.clientY - context.startY;
 
