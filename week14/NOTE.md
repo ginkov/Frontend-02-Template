@@ -70,9 +70,18 @@ start, move, end
 
 # 4 | 处理鼠标事件
 
+在浏览器里，至少支持5个键的 Mouse Up/Down
+
+通过 isListeningMouse 区分多个键。
+
 # 5 | 派发事件
+
+整体功能差不多了。
 
 # 6 | 实现一个 flick 事件
 
+flick 如何判断速度？
+
 # 7 | 封装
 
+实现封装。
