@@ -1,12 +1,15 @@
-// let element = document.documentElement;
-
-export function dispatch(type, properties) {
-    let event = new Event(type);
-    for(let name in properties) {
-        event[name] = properties[name]
+export class Dispatcher {
+    constructor(element) {
+        this.element = element;
     }
-    element.dispatchEvent(event)
-} 
+    dispatch(type, properties) {
+        let event = new Event(type);
+        for(let name in properties) {
+            event[name] = properties[name];
+        }
+        this.element.dispatchEvent(event)
+    }
+}
 
 export class Listener {
     constructor(element, recognizer) {
@@ -47,7 +50,7 @@ export class Listener {
             };
             let mouseup = event => {
                 // 双键一起按，可以看到 end 发生了两次
-                console.log("end", event.button)
+                // console.log("end", event.button)
                 let context = contexts.get("mouse" + (1<<event.button));
                 recognizer.end(event, context)
                 contexts.delete("mouse" + (1<<event.button))
@@ -106,7 +109,7 @@ export class Listener {
 
 export class Recognizer{
     constructor(dispatch) {
-        this.dispatch = dispatch
+        this.dispatcher = dispatch
     }
     // 触屏有多个 touch, 鼠标有左右键, 因此下面这些不适合作全局变量
     // 在函数调用时搞一个 context
@@ -132,7 +135,7 @@ export class Recognizer{
             context.isPress = true;
             context.handler = null; // 避免多次 clear
             // console.log("press")
-            this.dispatch("press", {});
+            this.dispatcher.dispatch("press", {});
         }, 500)
     }
 
@@ -147,7 +150,7 @@ export class Recognizer{
             context.isPress = false;
             isVertical = Math.abs(dx) < Math.abs(dy)// 判断上下滑，还是左右滑
             // console.log("panstart");
-            this.dispatch("panstart", {
+            this.dispatcher.dispatch("panstart", {
                 startX: context.startX,
                 startY: context.startY,
                 clientX: point.clientX,
@@ -158,7 +161,7 @@ export class Recognizer{
         }
     
         if(context.isPan) {
-            this.dispatch("pan", {
+            this.dispatcher.dispatch("pan", {
                 startX: context.startX,
                 startY: context.startY,
                 clientX: point.clientX,
@@ -177,20 +180,11 @@ export class Recognizer{
     }
     end(point, context) {
         if(context.isTap) {
-            dispatch("tap",{})
+            this.dispatcher.dispatch("tap",{})
             clearTimeout(context.handler)
         }
-        if(context.isPan) {
-            this.dispatch("panend", {
-                startX: context.startX,
-                startY: context.startY,
-                clientX: point.clientX,
-                clientY: point.clientY,
-                isVertical: context.isVertical
-            })
-        }
         if(context.isPress) {
-            console.log("pressend")
+            dispatch("pressend", {}) // press 没有参数
         }
         context.points = context.points.filter(point => Date.now() - point.t < 500)
         let d,v;
@@ -205,20 +199,39 @@ export class Recognizer{
         }
         // 如果 v > 1.5px/ms 就认为是比较快的，就是 flick
         if(v>1.5) {
-            console.log("flick")
+            this.dispatcher.dispatch("flick", {
+                startX: context.startX,
+                startY: context.startY,
+                clientX: point.clientX,
+                clientY: point.clientY,
+                isVertical: context.isVertical,
+                isFlick: context.isFlick,
+                velocity: v
+            })
             context.isFlick = true
         } else {
             context.isFlick = false;
+        }
+        // pan 的逻辑要放到 flick 之后
+        if(context.isPan) {
+            this.dispatcher.dispatch("panend", {
+                startX: context.startX,
+                startY: context.startY,
+                clientX: point.clientX,
+                clientY: point.clientY,
+                isVertical: context.isVertical,
+                isFlick: context.isFlick
+            })
         }
     }
     
     cancel(point, context) {
         clearTimeout(context.handler)
-        console.log("cancel", point.clientX, point.clientY)
-    }
+        this.dispatcher.dispatch("cancel", {})
+}
     
 }
 
 export function enableGesture(element) {
-
+    new Listener(element, new Recognizer(new Dispatcher(element)));
 }
