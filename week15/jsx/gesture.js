@@ -117,8 +117,12 @@ export class Recognizer{
     // let startX, startY;
     // let isPan = false, isTap = true, isPress = false;
     start(point, context) {
-        // console.log("start", point.clientX, point.clientY)
         context.startX = point.clientX, context.startY = point.clientY;
+        this.dispatcher.dispatch("start", {
+            clientX: point.clientX,
+            clientY: point.clientY
+        })
+
         context.points = [{
             t: Date.now(),
             x: point.clientX,
@@ -148,7 +152,7 @@ export class Recognizer{
             context.isTap = false;
             context.isPan = true;
             context.isPress = false;
-            isVertical = Math.abs(dx) < Math.abs(dy)// 判断上下滑，还是左右滑
+            context.isVertical = Math.abs(dx) < Math.abs(dy)// 判断上下滑，还是左右滑
             // console.log("panstart");
             this.dispatcher.dispatch("panstart", {
                 startX: context.startX,
@@ -220,9 +224,19 @@ export class Recognizer{
                 clientX: point.clientX,
                 clientY: point.clientY,
                 isVertical: context.isVertical,
-                isFlick: context.isFlick
+                isFlick: context.isFlick,
+                velocity: v
             })
         }
+        this.dispatcher.dispatch("end", {
+            startX: context.startX,
+            startY: context.startY,
+            clientX: point.clientX,
+            clientY: point.clientY,
+            isVertical: context.isVertical,
+            isFlick: context.isFlick,
+            velocity: v
+        })
     }
     
     cancel(point, context) {
