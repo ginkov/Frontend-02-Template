@@ -24,16 +24,20 @@ export function createElement(type, atrributes, ...children) {
 }
 export class Component {
     constructor(type) {
-        // this.root = this.render()
-    }
+        this.attributes = Object.create(null);
 
+    }
     setAttribute(name, value) {
-        this.root.setAttribute(name, value);
+        // this.root.setAttribute(name, value);
+        this.attributes[name] = value
     }
     appendChild(child) {
         child.mountTo(this.root);
     }
     mountTo(parent) {
+        if(!this.root) {
+            this.render();
+        }
         parent.appendChild(this.root)
     }
 }
